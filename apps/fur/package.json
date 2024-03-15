@@ -11,16 +11,19 @@
     "lint": "eslint src/"
   },
   "dependencies": {
+    "@repo/ui": "*",
+    "autoprefixer": "^10.4.18",
+    "postcss": "^8.4.35",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "@repo/ui": "*"
+    "tailwindcss": "^3.4.1"
   },
   "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
     "@types/react": "^18.2.62",
     "@types/react-dom": "^18.2.19",
     "@vitejs/plugin-react": "^4.2.1",
-    "@repo/eslint-config": "*",
-    "@repo/typescript-config": "*",
     "typescript": "^5.3.3",
     "vite": "^5.1.4"
   }

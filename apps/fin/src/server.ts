@@ -16,6 +16,5 @@ export const createServer = () => {
     .get("/healthz", (_, res) => {
       return res.json({ ok: true });
     });
-
   return app;
 };

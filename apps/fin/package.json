@@ -21,6 +21,7 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "@repo/database": "*",
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
     "@types/body-parser": "^1.19.5",

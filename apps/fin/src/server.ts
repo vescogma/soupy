@@ -2,6 +2,7 @@ import { json, urlencoded } from "body-parser";
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import patientsRouter from "./routes/patients";
 
 export const createServer = () => {
   const app = express();
@@ -11,10 +12,8 @@ export const createServer = () => {
     .use(urlencoded({ extended: true }))
     .use(json())
     .use(cors())
-    .get("/message/:name", (req, res) => {
-      return res.json({ message: `hello ${req.params.name}` });
-    })
-    .get("/healthz", (req, res) => {
+    .use("/patients", patientsRouter)
+    .get("/healthz", (_, res) => {
       return res.json({ ok: true });
     });
 

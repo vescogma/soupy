@@ -4,7 +4,7 @@
   "compilerOptions": {
     "allowJs": false,
     "esModuleInterop": false,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "lib": ["dom", "dom.iterable", "esnext"],
     "module": "ESNext",
     "noEmit": true,
@@ -13,7 +13,8 @@
     "target": "ESNext",
     "types": ["vite/client"],
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "paths": { "@/*": ["./src/*"] },
   },
   "include": ["src"]
 }

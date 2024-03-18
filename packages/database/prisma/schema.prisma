@@ -8,10 +8,41 @@ datasource db {
 }
 
 model Patient {
+  id                String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at        DateTime           @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime           @default(now()) @db.Timestamptz(6)
+  deleted_at        DateTime           @default(now()) @db.Timestamptz(6)
+  first_name        String?
+  middle_name       String?
+  last_name         String?
+  date_of_birth     DateTime?          @db.Date
+  status            PatientStatus?
+  patient_addresses PatientAddresses[]
+
+  @@map("patients")
+}
+
+model PatientAddresses {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   created_at DateTime @default(now()) @db.Timestamptz(6)
   updated_at DateTime @default(now()) @db.Timestamptz(6)
   deleted_at DateTime @default(now()) @db.Timestamptz(6)
+  patient_id String   @db.Uuid
+  line_1     String?
+  line_2     String?
+  city       String?
+  state      String?
+  zip        String?
+  patient    Patient  @relation(fields: [patient_id], references: [id])
 
-  @@map("patients")
+  @@map("patient_addresses")
+}
+
+enum PatientStatus {
+  Inquiry
+  Onboarding
+  Active
+  Churned
+
+  @@map("patient_status")
 }

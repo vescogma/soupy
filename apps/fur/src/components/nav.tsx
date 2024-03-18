@@ -13,8 +13,8 @@ import {
   DropdownMenu,
   Avatar,
 } from "@nextui-org/react";
-import { ReactNode, useState } from "react";
-import { matchPath, useLocation, useMatch, useMatches } from "react-router-dom";
+import { useState } from "react";
+import { matchPath, useLocation } from "react-router-dom";
 
 export function Nav() {
   const [open, setOpen] = useState(false);
@@ -41,21 +41,62 @@ export function Nav() {
       </NavbarContent>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem isActive={isHome}>
-          <Link href="/" color={isHome ? "primary" : "foreground"}>
+          <Link
+            href="/"
+            color={isHome ? "primary" : "foreground"}
+            aria-current={isHome ? "page" : undefined}
+          >
             Home
           </Link>
         </NavbarItem>
         <NavbarItem isActive={isPatients}>
-          <Link href="/patients" color={isPatients ? "primary" : "foreground"}>
+          <Link
+            href="/patients"
+            color={isPatients ? "primary" : "foreground"}
+            aria-current={isPatients ? "page" : undefined}
+          >
             Patients
           </Link>
         </NavbarItem>
         <NavbarItem isActive={isSettings}>
-          <Link href="/settings" color={isSettings ? "primary" : "foreground"}>
+          <Link
+            href="/settings"
+            color={isSettings ? "primary" : "foreground"}
+            aria-current={isSettings ? "page" : undefined}
+          >
             Settings
           </Link>
         </NavbarItem>
       </NavbarContent>
+      <NavbarMenu>
+        <NavbarMenuItem isActive={isHome}>
+          <Link
+            href="/"
+            color={isHome ? "primary" : "foreground"}
+            aria-current={isHome ? "page" : undefined}
+          >
+            Home
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem isActive={isPatients}>
+          <Link
+            href="/patients"
+            color={isPatients ? "primary" : "foreground"}
+            aria-current={isPatients ? "page" : undefined}
+          >
+            Patients
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem isActive={isSettings}>
+          <Link
+            href="/settings"
+            color={isSettings ? "primary" : "foreground"}
+            aria-current={isSettings ? "page" : undefined}
+          >
+            Settings
+          </Link>
+        </NavbarMenuItem>
+      </NavbarMenu>
       <NavbarContent as="div" justify="end">
         <Dropdown placement="bottom-end">
           <DropdownTrigger>

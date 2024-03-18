@@ -22,7 +22,7 @@ function App(): JSX.Element {
   return (
     <ThemeProvider>
       <NextUIProvider>
-        <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />;
+        <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
       </NextUIProvider>
     </ThemeProvider>
   );

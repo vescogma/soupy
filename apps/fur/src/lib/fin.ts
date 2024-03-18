@@ -9,6 +9,12 @@ export const get = (pathname: string, init?: RequestInit) =>
       ...(init?.headers ?? {}),
     },
     ...(init ?? {}),
+  }).then(({ error, data }) => {
+    if (error) {
+      console.error(error);
+      throw new Error(error);
+    }
+    return data;
   });
 
 export const post = (pathname: string, data?: any, init?: RequestInit) =>
@@ -20,4 +26,10 @@ export const post = (pathname: string, data?: any, init?: RequestInit) =>
     },
     ...(data ? { body: JSON.stringify(data) } : {}),
     ...(init ?? {}),
+  }).then(({ error, data }) => {
+    if (error) {
+      console.error(error);
+      throw new Error(error);
+    }
+    return data;
   });

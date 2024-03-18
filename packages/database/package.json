@@ -2,8 +2,10 @@
   "name": "@repo/database",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "exports": {
-    ".": "./src/client.ts"
+    "./server": "./src/server.ts",
+    "./client": "./src/client.ts"
   },
   "scripts": {
     "db:generate": "prisma generate",

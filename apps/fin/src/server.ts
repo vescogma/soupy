@@ -3,6 +3,7 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import patientsRouter from "./routes/patients";
+import configFieldsRouter from "./routes/config-fields";
 
 export const createServer = () => {
   const app = express();
@@ -13,6 +14,7 @@ export const createServer = () => {
     .use(json())
     .use(cors())
     .use("/patients", patientsRouter)
+    .use("/config-fields", configFieldsRouter)
     .get("/healthz", (_, res) => {
       return res.json({ ok: true });
     });

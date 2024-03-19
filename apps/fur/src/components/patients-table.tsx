@@ -31,7 +31,7 @@ const STATUSES = [
   PatientStatus.Onboarding,
 ] as const;
 
-export default function PatientsTable() {
+export function PatientsTable() {
   const [searchParams, setSearchParams] = useState<string>("");
   const [[sortK, sortV], setSort] = useState<[string, string]>([
     "created_at",
@@ -81,7 +81,7 @@ export default function PatientsTable() {
   }
 
   return (
-    <main className="max-w-[1536px] mx-auto flex flex-col gap-3 py-6">
+    <div className="flex flex-col gap-3 py-6">
       <h1 className="text-2xl px-6">Patients</h1>
       <div className="flex justify-end px-6">
         <PatientsNewModal onCreate={() => mutate()} />
@@ -154,7 +154,7 @@ export default function PatientsTable() {
           ))}
         </div>
       </section>
-    </main>
+    </div>
   );
 }
 

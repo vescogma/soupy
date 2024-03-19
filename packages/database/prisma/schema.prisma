@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"]
 }
 
@@ -18,6 +18,7 @@ model Patient {
   last_name         String?
   dob               String?
   status            PatientStatus?
+  config            Json?              @db.JsonB
   patient_addresses PatientAddresses[]
 
   @@map("patients")
@@ -37,6 +38,17 @@ model PatientAddresses {
   patient    Patient  @relation(fields: [patient_id], references: [id])
 
   @@map("patient_addresses")
+}
+
+model ConfigField {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+  deleted_at DateTime @default(now()) @db.Timestamptz(6)
+  type       String
+  label      String
+
+  @@map("config_fields")
 }
 
 enum PatientStatus {

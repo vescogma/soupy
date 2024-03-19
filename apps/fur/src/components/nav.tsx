@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { matchPath, useLocation } from "react-router-dom";
 import {
   Navbar,
   NavbarBrand,
@@ -13,15 +15,13 @@ import {
   DropdownMenu,
   Avatar,
 } from "@nextui-org/react";
-import { useState } from "react";
-import { matchPath, useLocation } from "react-router-dom";
 
 export function Nav() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const isHome = Boolean(matchPath("/", location.pathname));
   const isPatients = Boolean(matchPath("/patients", location.pathname));
-  const isSettings = Boolean(matchPath("/settings", location.pathname));
+  const isFields = Boolean(matchPath("/fields", location.pathname));
 
   return (
     <Navbar
@@ -58,13 +58,13 @@ export function Nav() {
             Patients
           </Link>
         </NavbarItem>
-        <NavbarItem isActive={isSettings}>
+        <NavbarItem isActive={isFields}>
           <Link
-            href="/settings"
-            color={isSettings ? "primary" : "foreground"}
-            aria-current={isSettings ? "page" : undefined}
+            href="/fields"
+            color={isFields ? "primary" : "foreground"}
+            aria-current={isFields ? "page" : undefined}
           >
-            Settings
+            Fields
           </Link>
         </NavbarItem>
       </NavbarContent>
@@ -87,13 +87,13 @@ export function Nav() {
             Patients
           </Link>
         </NavbarMenuItem>
-        <NavbarMenuItem isActive={isSettings}>
+        <NavbarMenuItem isActive={isFields}>
           <Link
-            href="/settings"
-            color={isSettings ? "primary" : "foreground"}
-            aria-current={isSettings ? "page" : undefined}
+            href="/fields"
+            color={isFields ? "primary" : "foreground"}
+            aria-current={isFields ? "page" : undefined}
           >
-            Settings
+            Fields
           </Link>
         </NavbarMenuItem>
       </NavbarMenu>

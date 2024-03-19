@@ -47,27 +47,34 @@ router.get("/", (async (req, res) => {
     });
     return res.json({ data: patients });
   } catch (err) {
+    console.error(err);
     return res.status(500).json({ error: "Something went wrong." });
   }
 }) as RequestHandler);
 
 router.post("/", (async (req, res) => {
-  const input = req.body as Prisma.PatientCreateInput;
-  const patient = await prisma.patient.create({
-    data: {
-      first_name: input.first_name,
-      middle_name: input.middle_name,
-      last_name: input.last_name,
-      dob: input.dob,
-      status: input.status,
-      patient_addresses: {
-        createMany: {
-          data: [{}],
+  try {
+    const input = req.body as Prisma.PatientCreateInput;
+    const patient = await prisma.patient.create({
+      data: {
+        first_name: input.first_name,
+        middle_name: input.middle_name,
+        last_name: input.last_name,
+        dob: input.dob,
+        status: input.status,
+        config: input.config,
+        patient_addresses: {
+          createMany: {
+            data: [{}],
+          },
         },
       },
-    },
-  });
-  return res.json({ data: patient });
+    });
+    return res.json({ data: patient });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Something went wrong." });
+  }
 }) as RequestHandler);
 
 export default router;

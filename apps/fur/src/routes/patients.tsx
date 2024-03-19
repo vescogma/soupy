@@ -1,4 +1,4 @@
-import PatientsTable from "@/components/patients-table";
+import { PatientsTable } from "@/components/patients-table";
 
 export default function Patients() {
   return (

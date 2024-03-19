@@ -9,7 +9,12 @@ import {
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash } from "lucide-react";
-import { Patient, PatientStatus, Prisma } from "@repo/database/client";
+import {
+  ConfigField,
+  Patient,
+  PatientStatus,
+  Prisma,
+} from "@repo/database/client";
 import {
   Modal,
   ModalContent,
@@ -23,7 +28,9 @@ import {
   SelectItem,
 } from "@nextui-org/react";
 
-import { post } from "@/lib/fin";
+import { get, post } from "@/lib/fin";
+import useSWR from "swr";
+import { useMemo } from "react";
 
 const STATUSES = [
   PatientStatus.Active,
@@ -32,34 +39,47 @@ const STATUSES = [
   PatientStatus.Onboarding,
 ] as const;
 
-const formSchema = z.object({
-  first_name: z.string().min(1),
-  middle_name: z.string().optional(),
-  last_name: z.string().min(1),
-  dob: z.string().min(1),
-  status: z.enum(STATUSES),
-  addresses: z
-    .array(
-      z.object({
-        line_1: z.string().min(1),
-        line_2: z.string().optional(),
-        city: z.string().min(1),
-        state: z.string().min(1),
-      })
-    )
-    .optional(),
-});
-
 export function PatientsNewModal({
   onCreate,
 }: {
   onCreate: (patient: Patient) => void;
 }) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+
+  const { data: configFields, isLoading } = useSWR<ConfigField[]>(
+    "/config-fields",
+    get
+  );
+
+  const formSchema = useMemo(
+    () =>
+      z.object({
+        first_name: z.string().min(1),
+        middle_name: z.string().optional(),
+        last_name: z.string().min(1),
+        dob: z.string().min(1),
+        status: z.enum(STATUSES),
+        addresses: z
+          .array(
+            z.object({
+              line_1: z.string().min(1),
+              line_2: z.string().optional(),
+              city: z.string().min(1),
+              state: z.string().min(1),
+            })
+          )
+          .optional(),
+        config: z.record(z.string(), z.string().optional()).optional(),
+      }),
+    [configFields]
+  );
+
   const methods = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {},
   });
+
+  console.log(methods.watch("config"));
 
   const { trigger, isMutating } = useSWRMutation(
     "/patients",
@@ -73,6 +93,7 @@ export function PatientsNewModal({
       last_name: values.last_name,
       dob: values.dob,
       status: values.status,
+      config: values.config,
       patient_addresses:
         (values.addresses ?? []).length > 0
           ? { create: values.addresses }
@@ -135,6 +156,22 @@ export function PatientsNewModal({
                       </Select>
                     )}
                   />
+                  {(configFields ?? []).map((cf) => (
+                    <Controller
+                      key={cf.id}
+                      name={`config.${cf.id}`}
+                      control={methods.control}
+                      render={({ field }) => (
+                        <Input
+                          type={cf.type === "Number" ? "number" : "text"}
+                          label={cf.label}
+                          variant="bordered"
+                          radius="sm"
+                          {...field}
+                        />
+                      )}
+                    />
+                  ))}
                   <h3 className="font-medium">Address</h3>
                   <AddressFields />
                 </form>
@@ -232,10 +269,7 @@ function DetailsFields() {
 
 function AddressFields() {
   const { control } = useFormContext();
-  const addresses = useFieldArray({
-    name: "addresses",
-    control,
-  });
+  const addresses = useFieldArray({ name: "addresses", control });
   return (
     <div className="divide-y">
       {addresses.fields.map((item, idx) => (

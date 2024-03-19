@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { matchPath, useLocation } from "react-router-dom";
+import { matchPath, useLocation, Link } from "react-router-dom";
 import {
   Navbar,
   NavbarBrand,
@@ -8,7 +8,6 @@ import {
   NavbarMenuToggle,
   NavbarMenu,
   NavbarMenuItem,
-  Link,
   DropdownItem,
   DropdownTrigger,
   Dropdown,
@@ -42,8 +41,8 @@ export function Nav() {
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem isActive={isHome}>
           <Link
-            href="/"
-            color={isHome ? "primary" : "foreground"}
+            to="/"
+            // color={isHome ? "primary" : "foreground"}
             aria-current={isHome ? "page" : undefined}
           >
             Home
@@ -51,8 +50,8 @@ export function Nav() {
         </NavbarItem>
         <NavbarItem isActive={isPatients}>
           <Link
-            href="/patients"
-            color={isPatients ? "primary" : "foreground"}
+            to="/patients"
+            // color={isPatients ? "primary" : "foreground"}
             aria-current={isPatients ? "page" : undefined}
           >
             Patients
@@ -60,8 +59,8 @@ export function Nav() {
         </NavbarItem>
         <NavbarItem isActive={isFields}>
           <Link
-            href="/fields"
-            color={isFields ? "primary" : "foreground"}
+            to="/fields"
+            // color={isFields ? "primary" : "foreground"}
             aria-current={isFields ? "page" : undefined}
           >
             Fields
@@ -71,8 +70,8 @@ export function Nav() {
       <NavbarMenu>
         <NavbarMenuItem isActive={isHome}>
           <Link
-            href="/"
-            color={isHome ? "primary" : "foreground"}
+            to="/"
+            // color={isHome ? "primary" : "foreground"}
             aria-current={isHome ? "page" : undefined}
           >
             Home
@@ -80,8 +79,8 @@ export function Nav() {
         </NavbarMenuItem>
         <NavbarMenuItem isActive={isPatients}>
           <Link
-            href="/patients"
-            color={isPatients ? "primary" : "foreground"}
+            to="/patients"
+            // color={isPatients ? "primary" : "foreground"}
             aria-current={isPatients ? "page" : undefined}
           >
             Patients
@@ -89,8 +88,8 @@ export function Nav() {
         </NavbarMenuItem>
         <NavbarMenuItem isActive={isFields}>
           <Link
-            href="/fields"
-            color={isFields ? "primary" : "foreground"}
+            to="/fields"
+            // color={isFields ? "primary" : "foreground"}
             aria-current={isFields ? "page" : undefined}
           >
             Fields

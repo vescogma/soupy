@@ -9,12 +9,7 @@ import {
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash } from "lucide-react";
-import {
-  ConfigField,
-  Patient,
-  PatientStatus,
-  Prisma,
-} from "@repo/database/client";
+import { ConfigField, Patient, Prisma } from "@repo/database/client";
 import {
   Modal,
   ModalContent,
@@ -32,12 +27,7 @@ import { get, post } from "@/lib/fin";
 import useSWR from "swr";
 import { useMemo } from "react";
 
-const STATUSES = [
-  PatientStatus.Active,
-  PatientStatus.Churned,
-  PatientStatus.Inquiry,
-  PatientStatus.Onboarding,
-] as const;
+const STATUSES = ["Active", "Churned", "Inquiry", "Onboarding"] as const;
 
 export function PatientsNewModal({
   onCreate,
@@ -78,8 +68,6 @@ export function PatientsNewModal({
     resolver: zodResolver(formSchema),
     defaultValues: {},
   });
-
-  console.log(methods.watch("config"));
 
   const { trigger, isMutating } = useSWRMutation(
     "/patients",

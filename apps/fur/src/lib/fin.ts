@@ -2,7 +2,7 @@ export const fetcher = (...args: Parameters<typeof fetch>) =>
   fetch(...args).then((res) => res.json());
 
 export const get = (pathname: string, init?: RequestInit) =>
-  fetcher(`http://localhost:3001${pathname}`, {
+  fetcher(`${import.meta.env.VITE_FIN_URL}${pathname}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -18,7 +18,7 @@ export const get = (pathname: string, init?: RequestInit) =>
   });
 
 export const post = (pathname: string, data?: any, init?: RequestInit) =>
-  fetcher(`http://localhost:3001${pathname}`, {
+  fetcher(`${import.meta.env.VITE_FIN_URL}${pathname}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

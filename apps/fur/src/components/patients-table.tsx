@@ -8,7 +8,7 @@ import {
   Settings,
 } from "lucide-react";
 import { useDebounceValue } from "usehooks-ts";
-import { Patient, PatientStatus } from "@repo/database/client";
+import { Patient } from "@repo/database/client";
 import {
   Spinner,
   Popover,
@@ -24,12 +24,7 @@ import {
 import { get } from "@/lib/fin";
 import { PatientsNewModal } from "./patients-new-modal";
 
-const STATUSES = [
-  PatientStatus.Active,
-  PatientStatus.Churned,
-  PatientStatus.Inquiry,
-  PatientStatus.Onboarding,
-] as const;
+const STATUSES = ["Active", "Churned", "Inquiry", "Onboarding"] as const;
 
 export function PatientsTable() {
   const [searchParams, setSearchParams] = useState<string>("");
@@ -116,7 +111,7 @@ export function PatientsTable() {
           />
           <Header
             label="Status"
-            isActive={dobQ.length > 0 || sortK === "status"}
+            isActive={Array.from(statusQ).length > 0 || sortK === "status"}
             options={
               <div className="mt-2 flex flex-col gap-2 w-full">
                 <Select

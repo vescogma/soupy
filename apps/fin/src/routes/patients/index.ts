@@ -1,39 +1,63 @@
+import { z } from "zod";
 import { Router, type RequestHandler } from "express";
-import { prisma, type Prisma, type PatientStatus } from "@repo/database/server";
+import {
+  prisma,
+  type Prisma,
+  PatientStatus,
+  type Patient,
+} from "@repo/database/server";
+import { validate } from "../../lib/validate";
+
+const STATUSES = [
+  PatientStatus.Active,
+  PatientStatus.Churned,
+  PatientStatus.Inquiry,
+  PatientStatus.Onboarding,
+] as const;
+const SORT_KEYS = [
+  "created_at",
+  "first_name",
+  "middle_name",
+  "last_name",
+  "dob",
+  "status",
+] as const;
+const SORT_VALS = ["asc", "desc"] as const;
 
 const router = Router();
 
-router.get("/", (async (req, res) => {
+const getQuerySchema = z.object({
+  filters: z
+    .object({
+      first_name: z.string().optional(),
+      middle_name: z.string().optional(),
+      last_name: z.string().optional(),
+      dob: z.string().optional(),
+      status: z.enum(STATUSES).optional(),
+    })
+    .optional(),
+  sortKey: z.enum(SORT_KEYS).optional(),
+  sortVal: z.enum(SORT_VALS).optional(),
+});
+
+router.get("/", validate("query", getQuerySchema), (async (req, res) => {
   try {
-    let patients = [];
-    const filters = req.query.filters as
-      | Record<string, string | string[]>
-      | undefined;
-    const sortKey = req.query.sortKey as string | undefined;
-    const sortVal = req.query.sortVal as string | undefined;
-    patients = await prisma.patient.findMany({
+    const query = req.query as z.infer<typeof getQuerySchema>;
+    const patients = await prisma.patient.findMany({
       where: {
-        OR: filters
+        OR: query.filters
           ? [
-              ...(filters.first_name
-                ? [{ first_name: { search: filters.first_name as string } }]
-                : []),
-              ...(filters.middle_name
-                ? [{ middle_name: { search: filters.middle_name as string } }]
-                : []),
-              ...(filters.last_name
-                ? [{ last_name: { search: filters.last_name as string } }]
-                : []),
-              ...(filters.dob
-                ? [{ dob: { search: filters.dob as string } }]
-                : []),
-              ...(filters.status
+              ...searchPartial("first_name", query.filters.first_name),
+              ...searchPartial("middle_name", query.filters.middle_name),
+              ...searchPartial("last_name", query.filters.last_name),
+              ...searchPartial("dob", query.filters.dob),
+              ...(query.filters.status
                 ? [
                     {
                       status: {
-                        in: (Array.isArray(filters.status)
-                          ? filters.status
-                          : [filters.status]) as PatientStatus[],
+                        in: (Array.isArray(query.filters.status)
+                          ? query.filters.status
+                          : [query.filters.status]) as PatientStatus[],
                       },
                     },
                   ]
@@ -42,7 +66,7 @@ router.get("/", (async (req, res) => {
           : undefined,
       },
       orderBy: {
-        [sortKey || "created_at"]: sortVal || "desc",
+        [query.sortKey || SORT_KEYS[0]]: query.sortVal || SORT_VALS[0],
       },
     });
     return res.json({ data: patients });
@@ -52,22 +76,39 @@ router.get("/", (async (req, res) => {
   }
 }) as RequestHandler);
 
-router.post("/", (async (req, res) => {
+const postPayloadSchema = z.object({
+  first_name: z.string(),
+  middle_name: z.string(),
+  last_name: z.string(),
+  dob: z.string(),
+  status: z.enum(STATUSES),
+  config: z.string().optional(),
+  patient_addresses: z
+    .object({
+      create: z.array(
+        z.object({
+          line_1: z.string(),
+          line_2: z.string().optional(),
+          city: z.string(),
+          state: z.string(),
+        })
+      ),
+    })
+    .optional(),
+});
+
+router.post("/", validate("body", postPayloadSchema), (async (req, res) => {
   try {
-    const input = req.body as Prisma.PatientCreateInput;
+    const payload = req.body as z.infer<typeof postPayloadSchema>;
     const patient = await prisma.patient.create({
       data: {
-        first_name: input.first_name,
-        middle_name: input.middle_name,
-        last_name: input.last_name,
-        dob: input.dob,
-        status: input.status,
-        config: input.config,
-        patient_addresses: {
-          createMany: {
-            data: [{}],
-          },
-        },
+        first_name: payload.first_name,
+        middle_name: payload.middle_name,
+        last_name: payload.last_name,
+        dob: payload.dob,
+        status: payload.status,
+        config: payload.config,
+        patient_addresses: payload.patient_addresses,
       },
     });
     return res.json({ data: patient });
@@ -78,3 +119,8 @@ router.post("/", (async (req, res) => {
 }) as RequestHandler);
 
 export default router;
+
+const searchPartial = (
+  col: string,
+  query?: string
+): Prisma.PatientWhereInput[] => (query ? [{ [col]: { search: query } }] : []);

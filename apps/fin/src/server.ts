@@ -1,11 +1,11 @@
 import { json, urlencoded } from "body-parser";
-import express from "express";
+import express, { type Express } from "express";
 import morgan from "morgan";
 import cors from "cors";
 import patientsRouter from "./routes/patients";
 import configFieldsRouter from "./routes/config-fields";
 
-export const createServer = () => {
+export const createServer = (): Express => {
   const app = express();
   app
     .disable("x-powered-by")
@@ -14,9 +14,7 @@ export const createServer = () => {
     .use(json())
     .use(cors())
     .use("/patients", patientsRouter)
-    .use("/config-fields", configFieldsRouter)
-    .get("/healthz", (_, res) => {
-      return res.json({ ok: true });
-    });
+    .use("/config-fields", configFieldsRouter);
+
   return app;
 };
